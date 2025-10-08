@@ -1,0 +1,55 @@
+package com.example.umc9th.domain.member.entity;
+
+import com.example.umc9th.domain.member.enums.Gender;
+import com.example.umc9th.domain.member.enums.SocialName;
+import com.example.umc9th.global.entity.BaseEntity;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.time.LocalDate;
+
+
+@Entity
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
+@Table(name = "member")
+public class Member extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "name", length = 10, nullable = false)
+    private String name;
+
+    @Column(name = "gender",  nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private Gender gender = Gender.NONE;
+
+    @Column(name = "birth")
+    private LocalDate birth;
+
+    @Column(name = "address", nullable = false)
+    private String address;
+
+    @Column(name = "provider", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private SocialName socialName;
+
+    @Column(name = "email", nullable = false)
+    private String email;
+
+    @Column(name = "point", nullable = false)
+    @Builder.Default
+    private int point = 0;
+
+    @Column(name = "phone_num", length = 13)
+    private String phoneNum;
+
+    @Column(name = "nickname", length = 10)
+    private String nickname;
+
+}
