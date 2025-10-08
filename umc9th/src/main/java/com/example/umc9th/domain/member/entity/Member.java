@@ -1,5 +1,7 @@
 package com.example.umc9th.domain.member.entity;
 
+import com.example.umc9th.domain.member.entity.mapping.MemberFood;
+import com.example.umc9th.domain.member.entity.mapping.MemberTerm;
 import com.example.umc9th.domain.member.enums.Gender;
 import com.example.umc9th.domain.member.enums.SocialName;
 import com.example.umc9th.global.entity.BaseEntity;
@@ -7,6 +9,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -51,5 +55,11 @@ public class Member extends BaseEntity {
 
     @Column(name = "nickname", length = 10)
     private String nickname;
+
+    @OneToMany(mappedBy= "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<MemberFood> memberFoodList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<MemberTerm> memberTermList = new ArrayList<>();
 
 }
