@@ -1,6 +1,6 @@
 package com.example.umc9th.domain.member.enums;
 
-public enum FoodName {
+public enum Category {
     KOREAN, JAPANESE, CHINESE, WESTERN, CHICKEN, KOREAN_SNACKS,
     MEAT_GRILL, LUNCHBOX, LATE_NIGHT, FAST_FOOD, DESSERT, ASIAN_FUSION
 }
