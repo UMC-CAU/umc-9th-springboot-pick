@@ -23,6 +23,4 @@ public class Category {
     @Enumerated(EnumType.STRING)
     private com.example.umc9th.domain.member.enums.Category category;
 
-    @OneToMany(mappedBy= "category")
-    private List<MemberFood> memberFoodList = new ArrayList<>();
 }
