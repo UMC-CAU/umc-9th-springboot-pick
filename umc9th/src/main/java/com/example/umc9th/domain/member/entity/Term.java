@@ -24,7 +24,4 @@ public class Term {
     @Column(name = "term", nullable = false)
     @Enumerated(EnumType.STRING)
     private TermName termName;
-
-    @OneToMany(mappedBy= "term")
-    private List<MemberTerm> memberTermList = new ArrayList<>();
 }
