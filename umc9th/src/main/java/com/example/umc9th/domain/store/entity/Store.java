@@ -1,7 +1,11 @@
 package com.example.umc9th.domain.store.entity;
 
+import com.example.umc9th.domain.mission.entity.Mission;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Builder
@@ -27,5 +31,8 @@ public class Store {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id", nullable = false)
     private Location location;
+
+    @OneToMany(mappedBy= "store", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Mission> missionList  = new ArrayList<>();
 
 }

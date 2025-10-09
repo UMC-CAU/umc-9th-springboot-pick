@@ -17,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-@Table(name = " mission")
+@Table(name = "mission")
 public class Mission extends BaseEntity {
 
     @Id
@@ -37,7 +37,7 @@ public class Mission extends BaseEntity {
     @JoinColumn(name = "store_id", nullable = false)
     private Store store;
 
-    @OneToMany(mappedBy= "mission")
+    @OneToMany(mappedBy= "mission", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<UserMission> userMissionList = new ArrayList<>();
 
 }

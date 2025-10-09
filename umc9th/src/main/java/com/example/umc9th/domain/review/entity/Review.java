@@ -14,7 +14,7 @@ import java.text.DecimalFormat;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-@Table(name = " review")
+@Table(name = "review")
 public class Review extends BaseEntity {
 
     @Id
@@ -34,4 +34,7 @@ public class Review extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
     private Store store;
+
+    @OneToOne(mappedBy = "review", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Reply reply;
 }
