@@ -1,6 +1,7 @@
 package com.example.umc9th.domain.store.entity;
 
 import com.example.umc9th.domain.mission.entity.Mission;
+import com.example.umc9th.domain.review.entity.Review;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -34,5 +35,8 @@ public class Store {
 
     @OneToMany(mappedBy= "store", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Mission> missionList  = new ArrayList<>();
+
+    @OneToMany(mappedBy= "store", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Review> reviewList = new ArrayList<>();
 
 }
