@@ -33,9 +33,11 @@ public class Store {
     @JoinColumn(name = "location_id", nullable = false)
     private Location location;
 
+    @Builder.Default
     @OneToMany(mappedBy= "store", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Mission> missionList  = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy= "store", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Review> reviewList = new ArrayList<>();
 
