@@ -1,6 +1,15 @@
 spring:
+  profiles:
+    active: local   # 기본 활성 프로파일 (test 실행 시 자동 override 됨)
+
   application:
     name: "umc9th"
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local   # ✅ 로컬 개발용 (기본값)
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -17,3 +26,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
