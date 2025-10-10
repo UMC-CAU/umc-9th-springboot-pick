@@ -12,7 +12,9 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 @Entity
@@ -60,6 +62,7 @@ public class Member extends BaseEntity {
 
     @Builder.Default
     @OneToMany(mappedBy= "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    //private Set<MemberFood> memberFoodList = new HashSet<>();
     private List<MemberFood> memberFoodList = new ArrayList<>();
 
     @Builder.Default

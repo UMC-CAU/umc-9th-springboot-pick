@@ -1,6 +1,9 @@
 package com.example.umc9th;
 
+import com.example.umc9th.domain.member.entity.Category;
 import com.example.umc9th.domain.member.entity.Member;
+import com.example.umc9th.domain.member.entity.mapping.MemberFood;
+import com.example.umc9th.domain.member.enums.Food;
 import com.example.umc9th.domain.mission.entity.Mission;
 import com.example.umc9th.domain.mission.entity.mapping.UserMission;
 import com.example.umc9th.domain.review.entity.Picture;
@@ -35,7 +38,7 @@ public class PerformanceTest {
         Store store = TestDataFactory.createStore(location, 1);
         em.persist(store);
 
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 100; i++) {
             Member member = TestDataFactory.createMember(i);
             em.persist(member);
 
@@ -53,7 +56,17 @@ public class PerformanceTest {
 
             Picture picture = TestDataFactory.createPicture(review, i);
             em.persist(picture);
+
+            for (int j = 0; j < 3; j++) {
+                Category category = TestDataFactory.createCategory(Food.values()[j % 3]);
+                em.persist(category);
+
+                MemberFood memberFood = TestDataFactory.createMemberFood(member, category);
+                member.getMemberFoodList().add(memberFood);
+            }
+
         }
+
 
         em.flush();
         em.clear();
@@ -64,7 +77,7 @@ public class PerformanceTest {
         long start = System.nanoTime();
 
         List<Member> members = em.createQuery(
-                "select distinct m from Member m join fetch m.reviewList", Member.class
+                "select distinct m from Member m join fetch m.memberFoodList", Member.class
         ).getResultList();
 
         long end = System.nanoTime();
