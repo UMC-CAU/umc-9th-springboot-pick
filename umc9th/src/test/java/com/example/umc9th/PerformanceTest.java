@@ -30,6 +30,7 @@ public class PerformanceTest {
     @PersistenceContext
     private EntityManager em;
 
+    // persist(): 쓰기 지연 - jpa에서 해당 객체를 관리해주기 위한 준비 (insert 예약어)
     @BeforeEach
     void setup() {
         Location location = TestDataFactory.createLocation("Seoul");
@@ -67,9 +68,8 @@ public class PerformanceTest {
 
         }
 
-
-        em.flush();
-        em.clear();
+        em.flush(); // DB 즉시 반영
+        em.clear(); // 영속성 컨텍스트 비우기
     }
 
     @Test

@@ -62,8 +62,8 @@ public class Member extends BaseEntity {
 
     @Builder.Default
     @OneToMany(mappedBy= "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<MemberFood> memberFoodList = new ArrayList<>();
-    //private Set<MemberFood> memberFoodList = new HashSet<>();
+    //private List<MemberFood> memberFoodList = new ArrayList<>();
+    private Set<MemberFood> memberFoodList = new HashSet<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
