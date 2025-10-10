@@ -34,11 +34,11 @@ public class Store {
     private Location location;
 
     @Builder.Default
-    @OneToMany(mappedBy= "store", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy= "store", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Mission> missionList  = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy= "store", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy= "store", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Review> reviewList = new ArrayList<>();
 
 }

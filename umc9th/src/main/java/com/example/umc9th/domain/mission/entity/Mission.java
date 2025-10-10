@@ -1,7 +1,6 @@
 package com.example.umc9th.domain.mission.entity;
 
 
-import com.example.umc9th.domain.member.entity.mapping.MemberTerm;
 import com.example.umc9th.domain.mission.entity.mapping.UserMission;
 import com.example.umc9th.domain.store.entity.Store;
 import com.example.umc9th.global.entity.BaseEntity;
@@ -38,7 +37,7 @@ public class Mission extends BaseEntity {
     private Store store;
 
     @Builder.Default
-    @OneToMany(mappedBy= "mission", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy= "mission", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<UserMission> userMissionList = new ArrayList<>();
 
 }
