@@ -58,15 +58,19 @@ public class Member extends BaseEntity {
     @Column(name = "nickname", length = 10)
     private String nickname;
 
+    @Builder.Default
     @OneToMany(mappedBy= "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<MemberFood> memberFoodList = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<MemberTerm> memberTermList = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<UserMission> userMissionList = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Review> reviewList = new ArrayList<>();
 

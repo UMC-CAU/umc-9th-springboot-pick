@@ -37,6 +37,7 @@ public class Mission extends BaseEntity {
     @JoinColumn(name = "store_id", nullable = false)
     private Store store;
 
+    @Builder.Default
     @OneToMany(mappedBy= "mission", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<UserMission> userMissionList = new ArrayList<>();
 

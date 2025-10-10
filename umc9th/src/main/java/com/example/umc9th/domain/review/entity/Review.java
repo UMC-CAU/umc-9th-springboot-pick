@@ -26,6 +26,7 @@ public class Review extends BaseEntity {
     @Column(name = "content", nullable = false)
     private String content;
 
+    @Builder.Default
     @Column(name = "star_score", precision = 2, scale = 1, nullable = false)
     private BigDecimal star_score = BigDecimal.ZERO;
 
@@ -40,6 +41,7 @@ public class Review extends BaseEntity {
     @OneToOne(mappedBy = "review", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Reply reply;
 
+    @Builder.Default
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Picture> pictureList = new ArrayList<>();
 }
