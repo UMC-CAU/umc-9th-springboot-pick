@@ -63,6 +63,9 @@ public class Member extends BaseEntity {
     @Column(name = "profileUrl")
     private String profileUrl;
 
+    @Column(name = "deleted_at")
+    private LocalDate deletedAt;
+
     @Builder.Default
     @OneToMany(mappedBy= "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     //private List<MemberFood> memberFoodList = new ArrayList<>();
