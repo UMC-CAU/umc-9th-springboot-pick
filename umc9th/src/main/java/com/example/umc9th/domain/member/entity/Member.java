@@ -60,6 +60,9 @@ public class Member extends BaseEntity {
     @Column(name = "nickname", length = 10)
     private String nickname;
 
+    @Column(name = "profileUrl")
+    private String profileUrl;
+
     @Builder.Default
     @OneToMany(mappedBy= "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     //private List<MemberFood> memberFoodList = new ArrayList<>();
