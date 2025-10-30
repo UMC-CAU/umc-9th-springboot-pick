@@ -1,0 +1,86 @@
+package com.example.umc9th;
+
+import com.example.umc9th.domain.member.entity.Category;
+import com.example.umc9th.domain.member.entity.Member;
+import com.example.umc9th.domain.member.entity.mapping.MemberFood;
+import com.example.umc9th.domain.member.enums.Food;
+import com.example.umc9th.domain.mission.entity.Mission;
+import com.example.umc9th.domain.mission.entity.mapping.UserMission;
+import com.example.umc9th.domain.review.entity.Picture;
+import com.example.umc9th.domain.review.entity.Reply;
+import com.example.umc9th.domain.review.entity.Review;
+import com.example.umc9th.domain.store.entity.Location;
+import com.example.umc9th.domain.store.entity.Store;
+import com.example.umc9th.util.TestDataFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+
+import java.util.List;
+
+@SpringBootTest
+@ActiveProfiles("test")
+@Transactional
+public class PerformanceTest {
+
+    @PersistenceContext
+    private EntityManager em;
+
+    // persist(): 쓰기 지연 - jpa에서 해당 객체를 관리해주기 위한 준비 (insert 예약어)
+    @BeforeEach
+    void setup() {
+        Location location = TestDataFactory.createLocation("Seoul");
+        em.persist(location);
+
+        Store store = TestDataFactory.createStore(location, 1);
+        em.persist(store);
+
+        for (int i = 0; i < 100; i++) {
+            Member member = TestDataFactory.createMember(i);
+            em.persist(member);
+
+            Mission mission = TestDataFactory.createMission(store, i);
+            em.persist(mission);
+
+            UserMission userMission = TestDataFactory.createUserMission(member, mission, false);
+            em.persist(userMission);
+
+            Review review = TestDataFactory.createReview(member, store, i);
+            em.persist(review);
+
+            Reply reply = TestDataFactory.createReply(review, i);
+            em.persist(reply);
+
+            Picture picture = TestDataFactory.createPicture(review, i);
+            em.persist(picture);
+
+            for (int j = 0; j < 3; j++) {
+                Category category = TestDataFactory.createCategory(Food.values()[j % 3]);
+                em.persist(category);
+
+                MemberFood memberFood = TestDataFactory.createMemberFood(member, category);
+                member.getMemberFoodList().add(memberFood);
+            }
+
+        }
+
+        em.flush(); // DB 즉시 반영
+        em.clear(); // 영속성 컨텍스트 비우기
+    }
+
+    @Test
+    void testReviewFetchPerformance() {
+        long start = System.nanoTime();
+
+        List<Member> members = em.createQuery(
+                "select distinct m from Member m join fetch m.memberFoodList", Member.class
+        ).getResultList();
+
+        long end = System.nanoTime();
+        System.out.println("조회 시간: " + (end - start) / 1_000_000 + "ms");
+    }
+}
