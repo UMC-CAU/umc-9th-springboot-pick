@@ -33,6 +33,7 @@ public class TestDataFactory {
                 .birth(LocalDate.of(2025, 10, 10))               // nullable = true
                 .phoneNum("010-0000-" + String.format("%04d", index)) // nullable = true
                 .nickname("user" + index)                      // nullable = true
+                .profileUrl("http://member" + index + "profile.com")
                 .build();
     }
 
