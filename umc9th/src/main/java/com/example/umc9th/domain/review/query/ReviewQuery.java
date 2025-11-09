@@ -20,14 +20,6 @@ public class ReviewQuery {
 
     private final JPAQueryFactory queryFactory;
 
-    /**
-     * 내가 작성한 리뷰 검색 (storeName / ratingBand 동적 필터)
-     *
-     * @param memberId   내 회원 ID (필수)
-     * @param storeName  가게명 부분일치(선택, null/blank 미적용)
-     * @param ratingBand 별점대(선택) 5: ==5.0, 4:[4.0,5.0), 3:[3.0,4.0), 2:[2.0,3.0), 1:[1.0,2.0)
-     * @param limit      최대 개수(선택, null/<=0이면 15)
-     */
     public List<MyReviewDto> searchReview(Long memberId, String storeName, Integer ratingBand, Integer limit) {
 
         // Q클래스 정의
