@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value = """
-        INSERT INTO review (content, star_score, created_at, member_id, store_id)"
+        INSERT INTO review (content, star_score, created_at, member_id, store_id)
         VALUES (:content, :starScore, NOW(), :memberId, :storeId)
     """, nativeQuery = true)
     int insertNative(@Param("content") String content,

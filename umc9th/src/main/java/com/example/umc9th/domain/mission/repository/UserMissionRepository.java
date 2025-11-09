@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserMissionRepository extends JpaRepository<UserMission, Long> {
 
-    long countByMember_IdAndFinishedTrue(Long memberId);
+    long countByMember_IdAndIsFinishedTrue(Long memberId);
 }
