@@ -92,7 +92,6 @@ public class StoreSearchQuery {
                                       String regions, String keyword, Long cursorId) {
         BooleanBuilder where = new BooleanBuilder();
 
-        // 지역 다중 필터 (Location.name)
         if (regions != null && !regions.isEmpty()) {
             where.and(l.name.in(regions));
         }
