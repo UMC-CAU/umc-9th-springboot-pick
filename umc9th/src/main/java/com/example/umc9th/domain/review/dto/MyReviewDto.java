@@ -8,5 +8,6 @@ public record MyReviewDto(
         String storeName,
         String content,
         BigDecimal starScore,
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+        String replyComment
 ) {}
