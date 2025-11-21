@@ -17,6 +17,8 @@ public class StoreController {
 
     private final StoreService storeService;
 
+    // 특정 지역에 가게 추가
+    // Post /api/v1/store/locations/{locationId}
     @PostMapping("/locations/{locationId}")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<StoreCreateResponse> createStore(

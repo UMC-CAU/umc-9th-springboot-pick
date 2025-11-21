@@ -17,10 +17,9 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    /**
-     * 가게에 리뷰 추가하기
-     * POST /api/v1/store/{storeId}/reviews
-     */
+
+     // 가게에 리뷰 추가하기
+     // POST /api/v1/store/{storeId}/reviews
     @PostMapping("/{storeId}/reviews")
     public ApiResponse<ReviewCreateResponse> createReview(
             @PathVariable Long storeId,
