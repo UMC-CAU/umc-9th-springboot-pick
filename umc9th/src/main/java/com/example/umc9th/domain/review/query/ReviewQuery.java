@@ -1,6 +1,7 @@
 package com.example.umc9th.domain.review.query;
 
 import com.example.umc9th.domain.review.dto.MyReviewDto;
+import com.example.umc9th.domain.review.entity.QReply;
 import com.example.umc9th.domain.review.entity.QReview;
 import com.example.umc9th.domain.store.entity.QStore;
 import com.querydsl.core.BooleanBuilder;
@@ -25,6 +26,7 @@ public class ReviewQuery {
         // Q클래스 정의
         QReview review = QReview.review;
         QStore store   = QStore.store;
+        QReply reply = QReply.reply;
 
         // BooleanBuilder 정의
         BooleanBuilder builder = new BooleanBuilder();
@@ -61,10 +63,12 @@ public class ReviewQuery {
                         review.store.name,
                         review.content,
                         review.star_score,
-                        review.createdAt
+                        review.createdAt,
+                        reply.comment
                 ))
                 .from(review)
                 .join(review.store, store)
+                .leftJoin(review.reply, reply)
                 .where(builder)                    // BooleanBuilder 사용
                 .orderBy(review.createdAt.desc(), review.id.desc()) // 최신순
                 .limit(size)
