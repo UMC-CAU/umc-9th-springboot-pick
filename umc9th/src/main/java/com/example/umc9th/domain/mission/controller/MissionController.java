@@ -23,7 +23,7 @@ public class MissionController {
 
      // 가게에 미션 추가하기
      // POST /api/v1/store/{storeId}/mission
-    @PostMapping("/store/{storeId}/mission")
+    @PostMapping("/mission/{storeId}")
     @Operation(
             summary = "가게에 미션 추가",
             description = "특정 가게에 새로운 미션을 등록합니다."
@@ -37,12 +37,12 @@ public class MissionController {
     }
 
     // 특정 가게의 미션 목록 조회 (페이징)
-    // GET /api/v1/store/{storeId}/missions?page=1
-    @GetMapping("/store/{storeId}/missions")
+    // GET /api/v1/missions/{storeId}?page=1
+    @GetMapping("/missions/{storeId}")
     @Operation(
             summary = "가게의 미션 목록 조회",
             description = """
-                    - 특정 가게에 등록된 미션 목록을 페이지네이션하여 조회합니다.
+                    - 특정 가게에 등록된 미션 목록을 조회합니다.
                     - page는 1 이상의 정수입니다. (쿼리 스트링 ?page=1)
                     - 한 페이지에 10개씩 고정으로 조회합니다.
                     """
@@ -59,6 +59,35 @@ public class MissionController {
         return ApiResponse.onSuccess(MissionSuccessCode.MISSION_LIST_SUCCESS, response);
     }
 
+    // 사용자가 진행 중인 미션 목록 조회
+    // GET /api/v1/missions/{memberId}?page=1
+    @GetMapping("/missions/{memberId}")
+    @Operation(
+            summary = "사용자가 진행 중인 미션 목록 조회",
+            description = """
+                    - 특정 사용자가 현재 진행 중인 미션 목록을 조회.
+                    
+                    - 현재는 PathVariable의 memberId로 조회하지만,
+                      추후 로그인/인증 기능 구현 시에는 
+                      Token에서 memberId를 추출하는 방식으로 변경할 예정.
+                    
+                    - page는 1 이상의 정수입니다. (쿼리 스트링 ?page=1)
+                    - 한 페이지에 10개씩 고정으로 조회합니다.
+                    """
+    )
+    public ApiResponse<PageResponse<MissionSummaryDto>> getOngoingMissions(
+            @PathVariable
+            @Parameter(description = "회원 ID. 현재는 PathVariable로 전달되지만, 추후에는 토큰에서 추출 예정")
+            Long memberId,
+
+            @OneBasedPageable
+            @Parameter(description = "1 이상의 페이지 번호 (?page=1 부터 시작)")
+            Pageable pageable
+    ) {
+        PageResponse<MissionSummaryDto> response = missionService.getOngoingMissions(memberId, pageable);
+        return ApiResponse.onSuccess(MissionSuccessCode.MISSION_ONGOING_LIST_SUCCESS, response);
+    }
+
      // 가게의 미션을 도전 중인 미션에 추가(미션 도전하기)
      // POST /api/v1/missions/{missionId}/challenge
     @PostMapping("/missions/{missionId}/challenge")
@@ -67,7 +96,10 @@ public class MissionController {
             description = "특정 미션을 유저의 도전 중인 미션(user_mission)에 추가합니다."
     )
     public ApiResponse<UserMissionChallengeResponse> challengeMission(
-            @PathVariable Long missionId,
+            @PathVariable
+            @Parameter(description = "회원 ID. 현재는 PathVariable로 전달되지만, 추후에는 토큰에서 추출 예정")
+            Long missionId,
+
             @RequestBody @Valid UserMissionChallengeRequest request
     ) {
         UserMissionChallengeResponse response = missionService.challengeMission(missionId, request);

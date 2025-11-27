@@ -15,6 +15,7 @@ import com.example.umc9th.domain.store.repository.StoreRepository;
 import com.example.umc9th.global.dto.PageResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -68,5 +69,19 @@ public class MissionService {
 
         var missionPage = missionRepository.findByStoreId(storeId, pageable);
         return MissionConverter.toMissionSummaryPage(missionPage);
+    }
+
+    // 사용자가 진행 중인 미션 목록 조회
+    public PageResponse<MissionSummaryDto> getOngoingMissions(Long memberId, Pageable pageable) {
+
+        // 멤버 존재 검증 (없으면 404)
+        memberRepository.findById(memberId)
+                .orElseThrow(() ->
+                        new EntityNotFoundException("Member not found. id=" + memberId));
+
+        Page<UserMission> page = userMissionRepository
+                .findByMember_IdAndFinishedFalse(memberId, pageable);
+
+        return MissionConverter.toMissionSummaryPageFromUserMission(page);
     }
 }

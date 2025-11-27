@@ -11,7 +11,9 @@ public enum MissionSuccessCode implements BaseSuccessCode {
 
     MISSION_CREATE_SUCCESS(HttpStatus.OK, "M001", "미션이 성공적으로 등록되었습니다."),
     MISSION_CHALLENGE_SUCCESS(HttpStatus.OK, "M002", "미션 도전을 시작했습니다."),
-    MISSION_LIST_SUCCESS(HttpStatus.OK, "M003", "가게 미션 목록 조회 성공");
+    MISSION_LIST_SUCCESS(HttpStatus.OK, "M003", "가게 미션 목록 조회 성공"),
+    MISSION_ONGOING_LIST_SUCCESS(HttpStatus.OK, "M004", "진행 중인 미션 목록 조회 성공");
+
 
     private final HttpStatus status;
     private final String code;
