@@ -8,6 +8,7 @@ import com.example.umc9th.domain.mission.dto.UserMissionChallengeRequest;
 import com.example.umc9th.domain.mission.dto.UserMissionChallengeResponse;
 import com.example.umc9th.domain.mission.service.MissionService;
 import com.example.umc9th.global.apiPayload.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +22,11 @@ public class MissionController {
 
      // 3) 가게에 미션 추가하기
      // POST /api/v1/store/{storeId}/mission
-
     @PostMapping("/store/{storeId}/mission")
+    @Operation(
+            summary = "가게에 미션 추가",
+            description = "특정 가게에 새로운 미션을 등록합니다."
+    )
     public ApiResponse<MissionCreateResponse> createMission(
             @PathVariable Long storeId,
             @RequestBody @Valid MissionCreateRequest request
@@ -34,8 +38,11 @@ public class MissionController {
 
      // 4) 가게의 미션을 도전 중인 미션에 추가(미션 도전하기)
      // POST /api/v1/missions/{missionId}/challenge
-
     @PostMapping("/missions/{missionId}/challenge")
+    @Operation(
+            summary = "미션 도전하기",
+            description = "특정 미션을 유저의 도전 중인 미션(user_mission)에 추가합니다."
+    )
     public ApiResponse<UserMissionChallengeResponse> challengeMission(
             @PathVariable Long missionId,
             @RequestBody @Valid UserMissionChallengeRequest request
@@ -43,4 +50,6 @@ public class MissionController {
         UserMissionChallengeResponse response = missionService.challengeMission(missionId, request);
         return ApiResponse.onSuccess(MissionSuccessCode.MISSION_CHALLENGE_SUCCESS, response);
     }
+
+
 }
