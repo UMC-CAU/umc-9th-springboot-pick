@@ -21,7 +21,7 @@ public class MissionController {
 
     private final MissionService missionService;
 
-     // 3) 가게에 미션 추가하기
+     // 가게에 미션 추가하기
      // POST /api/v1/store/{storeId}/mission
     @PostMapping("/store/{storeId}/mission")
     @Operation(
@@ -36,23 +36,7 @@ public class MissionController {
         return ApiResponse.onSuccess(MissionSuccessCode.MISSION_CREATE_SUCCESS, response);
     }
 
-
-     // 4) 가게의 미션을 도전 중인 미션에 추가(미션 도전하기)
-     // POST /api/v1/missions/{missionId}/challenge
-    @PostMapping("/missions/{missionId}/challenge")
-    @Operation(
-            summary = "미션 도전하기",
-            description = "특정 미션을 유저의 도전 중인 미션(user_mission)에 추가합니다."
-    )
-    public ApiResponse<UserMissionChallengeResponse> challengeMission(
-            @PathVariable Long missionId,
-            @RequestBody @Valid UserMissionChallengeRequest request
-    ) {
-        UserMissionChallengeResponse response = missionService.challengeMission(missionId, request);
-        return ApiResponse.onSuccess(MissionSuccessCode.MISSION_CHALLENGE_SUCCESS, response);
-    }
-
-    // ✅ 5) 특정 가게의 미션 목록 조회 (페이징)
+    // 특정 가게의 미션 목록 조회 (페이징)
     // GET /api/v1/store/{storeId}/missions?page=1
     @GetMapping("/store/{storeId}/missions")
     @Operation(
@@ -74,4 +58,21 @@ public class MissionController {
         PageResponse<MissionSummaryDto> response = missionService.getStoreMissions(storeId, pageable);
         return ApiResponse.onSuccess(MissionSuccessCode.MISSION_LIST_SUCCESS, response);
     }
+
+     // 가게의 미션을 도전 중인 미션에 추가(미션 도전하기)
+     // POST /api/v1/missions/{missionId}/challenge
+    @PostMapping("/missions/{missionId}/challenge")
+    @Operation(
+            summary = "미션 도전하기",
+            description = "특정 미션을 유저의 도전 중인 미션(user_mission)에 추가합니다."
+    )
+    public ApiResponse<UserMissionChallengeResponse> challengeMission(
+            @PathVariable Long missionId,
+            @RequestBody @Valid UserMissionChallengeRequest request
+    ) {
+        UserMissionChallengeResponse response = missionService.challengeMission(missionId, request);
+        return ApiResponse.onSuccess(MissionSuccessCode.MISSION_CHALLENGE_SUCCESS, response);
+    }
+
+
 }
