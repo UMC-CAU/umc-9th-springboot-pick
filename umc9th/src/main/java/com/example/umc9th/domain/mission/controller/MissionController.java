@@ -68,8 +68,8 @@ public class MissionController {
                     - 특정 사용자가 현재 진행 중인 미션 목록을 조회.
                     
                     - 현재는 PathVariable의 memberId로 조회하지만,
-                      추후 로그인/인증 기능 구현 시에는 
-                      Token에서 memberId를 추출하는 방식으로 변경할 예정.
+                      추후 로그인 기능 구현 시에는 
+                      토큰에서 memberId를 추출하는 방식으로 변경 필요.
                     
                     - page는 1 이상의 정수입니다. (쿼리 스트링 ?page=1)
                     - 한 페이지에 10개씩 고정으로 조회합니다.
