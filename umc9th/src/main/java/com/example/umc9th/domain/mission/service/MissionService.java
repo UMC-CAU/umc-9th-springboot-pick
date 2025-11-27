@@ -5,18 +5,17 @@ import com.example.umc9th.domain.member.entity.Member;
 import com.example.umc9th.domain.member.repository.MemberRepository;
 import com.example.umc9th.domain.mission.converter.MissionConverter;
 import com.example.umc9th.domain.mission.converter.UserMissionConverter;
-import com.example.umc9th.domain.mission.dto.MissionCreateRequest;
-import com.example.umc9th.domain.mission.dto.MissionCreateResponse;
-import com.example.umc9th.domain.mission.dto.UserMissionChallengeRequest;
-import com.example.umc9th.domain.mission.dto.UserMissionChallengeResponse;
+import com.example.umc9th.domain.mission.dto.*;
 import com.example.umc9th.domain.mission.entity.Mission;
 import com.example.umc9th.domain.mission.entity.mapping.UserMission;
 import com.example.umc9th.domain.mission.repository.MissionRepository;
 import com.example.umc9th.domain.mission.repository.UserMissionRepository;
 import com.example.umc9th.domain.store.entity.Store;
 import com.example.umc9th.domain.store.repository.StoreRepository;
+import com.example.umc9th.global.dto.PageResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 
@@ -57,5 +56,17 @@ public class MissionService {
         UserMission saved = userMissionRepository.save(userMission);
 
         return UserMissionConverter.toChallengeResponse(saved);
+    }
+
+    // 특정 가게의 미션 목록 조회
+    public PageResponse<MissionSummaryDto> getStoreMissions(Long storeId, Pageable pageable) {
+
+        // 가게 존재 여부 검증 (Optional)
+        storeRepository.findById(storeId)
+                .orElseThrow(() ->
+                        new EntityNotFoundException("Store not found. id=" + storeId));
+
+        var missionPage = missionRepository.findByStoreId(storeId, pageable);
+        return MissionConverter.toMissionSummaryPage(missionPage);
     }
 }
