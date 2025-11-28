@@ -6,6 +6,7 @@ import com.example.umc9th.domain.mission.dto.*;
 import com.example.umc9th.domain.mission.service.MissionService;
 import com.example.umc9th.global.apiPayload.ApiResponse;
 import com.example.umc9th.global.dto.PageResponse;
+import com.example.umc9th.global.dto.SliceResponse;
 import com.example.umc9th.global.web.page.OneBasedPageable;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -63,7 +64,7 @@ public class MissionController {
     // GET /api/v1/missions/{memberId}?page=1
     @GetMapping("/missions/{memberId}")
     @Operation(
-            summary = "사용자가 진행 중인 미션 목록 조회",
+            summary = "사용자가 진행 중인 미션 목록 조회 (Page 기반)",
             description = """
                     - 특정 사용자가 현재 진행 중인 미션 목록을 조회.
                     
@@ -85,6 +86,37 @@ public class MissionController {
             Pageable pageable
     ) {
         PageResponse<MissionSummaryDto> response = missionService.getOngoingMissions(memberId, pageable);
+        return ApiResponse.onSuccess(MissionSuccessCode.MISSION_ONGOING_LIST_SUCCESS, response);
+    }
+
+    @GetMapping("/missions/{memberId}/slice")
+    @Operation(
+            summary = "사용자가 진행 중인 미션 목록 조회 (Slice 기반)",
+            description = """
+                    특정 사용자가 현재 진행 중인 미션 목록을 Slice 기반으로 조회합니다.
+                    
+                    - Page 기반 API(/api/v1/missions/{memberId})와 달리,
+                      전체 개수(totalElements, totalPages)를 조회하지 않고
+                      hasNext 여부만 제공합니다.
+                    
+                    - 현재는 PathVariable의 memberId로 조회하지만,
+                      추후 로그인/인증 기능 구현 시에는 
+                      토큰에서 memberId를 추출하는 방식으로 변경 필요.
+                    """
+    )
+    public ApiResponse<SliceResponse<MissionSummaryDto>> getOngoingMissionsSlice(
+            @PathVariable
+            @Parameter(description = "회원 ID. 현재는 PathVariable로 전달되지만, 추후에는 토큰에서 추출 예정")
+            Long memberId,
+
+            @OneBasedPageable
+            @Parameter(description = "1 이상의 페이지 번호 (?page=1 부터 시작)")
+            Pageable pageable
+    ) {
+        SliceResponse<MissionSummaryDto> response =
+                missionService.getOngoingMissionsSlice(memberId, pageable);
+
+        // 굳이 따로 코드 만들지 않고 기존 성공 코드 재사용해도 무방
         return ApiResponse.onSuccess(MissionSuccessCode.MISSION_ONGOING_LIST_SUCCESS, response);
     }
 

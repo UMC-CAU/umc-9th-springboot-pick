@@ -13,10 +13,12 @@ import com.example.umc9th.domain.mission.repository.UserMissionRepository;
 import com.example.umc9th.domain.store.entity.Store;
 import com.example.umc9th.domain.store.repository.StoreRepository;
 import com.example.umc9th.global.dto.PageResponse;
+import com.example.umc9th.global.dto.SliceResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 
@@ -29,7 +31,7 @@ public class MissionService {
     private final StoreRepository storeRepository;
     private final MemberRepository memberRepository;
 
-    // 3) 가게에 미션 추가하기
+    // 가게에 미션 추가하기
     public MissionCreateResponse createMission(Long storeId, MissionCreateRequest request) {
 
         Store store = storeRepository.findById(storeId)
@@ -42,7 +44,7 @@ public class MissionService {
         return MissionConverter.toCreateResponse(saved);
     }
 
-    // 4) 미션 도전하기 (UserMission 추가)
+    // 미션 도전하기 (UserMission 추가)
     public UserMissionChallengeResponse challengeMission(Long missionId, UserMissionChallengeRequest request) {
 
         Mission mission = missionRepository.findById(missionId)
@@ -83,5 +85,19 @@ public class MissionService {
                 .findByMember_IdAndFinishedFalse(memberId, pageable);
 
         return MissionConverter.toMissionSummaryPageFromUserMission(page);
+    }
+
+    // Slice 기반 사용자가 진행 중인 미션 목록 조회
+    public SliceResponse<MissionSummaryDto> getOngoingMissionsSlice(Long memberId, Pageable pageable) {
+
+        // 멤버 존재 확인
+        memberRepository.findById(memberId)
+                .orElseThrow(() ->
+                        new EntityNotFoundException("Member not found. id=" + memberId));
+
+        Slice<UserMission> slice = userMissionRepository
+                .findSliceByMember_IdAndFinishedFalse(memberId, pageable);
+
+        return MissionConverter.toMissionSummarySliceFromUserMission(slice);
     }
 }

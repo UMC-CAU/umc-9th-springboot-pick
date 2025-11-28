@@ -6,7 +6,9 @@ import com.example.umc9th.domain.mission.entity.Mission;
 import com.example.umc9th.domain.mission.entity.mapping.UserMission;
 import com.example.umc9th.domain.store.entity.Store;
 import com.example.umc9th.global.dto.PageResponse;
+import com.example.umc9th.global.dto.SliceResponse;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Slice;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -78,7 +80,7 @@ public class MissionConverter {
                 .build();
     }
 
-    // Page<UserMission> → PageResponse<MissionSummaryDto>
+    // Page<UserMission> -> PageResponse<MissionSummaryDto>
     public static PageResponse<MissionSummaryDto> toMissionSummaryPageFromUserMission(Page<UserMission> userMissionPage) {
         List<MissionSummaryDto> content = userMissionPage.getContent().stream()
                 .map(MissionConverter::toMissionSummaryDto)
@@ -91,6 +93,22 @@ public class MissionConverter {
                 .totalElements(userMissionPage.getTotalElements())
                 .totalPages(userMissionPage.getTotalPages())
                 .last(userMissionPage.isLast())
+                .build();
+    }
+
+    // Slice<UserMission> -> SliceResponse<MissionSummaryDto>
+    public static SliceResponse<MissionSummaryDto> toMissionSummarySliceFromUserMission(
+            Slice<UserMission> userMissionSlice
+    ) {
+        List<MissionSummaryDto> content = userMissionSlice.getContent().stream()
+                .map(MissionConverter::toMissionSummaryDto)   // UserMission → MissionSummaryDto
+                .collect(Collectors.toList());
+
+        return SliceResponse.<MissionSummaryDto>builder()
+                .content(content)
+                .page(userMissionSlice.getNumber() + 1)
+                .size(userMissionSlice.getSize())
+                .hasNext(userMissionSlice.hasNext())
                 .build();
     }
 }
