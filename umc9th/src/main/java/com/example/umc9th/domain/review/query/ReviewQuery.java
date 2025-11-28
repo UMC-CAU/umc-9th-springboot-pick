@@ -6,8 +6,12 @@ import com.example.umc9th.domain.review.entity.QReview;
 import com.example.umc9th.domain.store.entity.QStore;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +25,12 @@ public class ReviewQuery {
 
     private final JPAQueryFactory queryFactory;
 
-    public List<MyReviewDto> searchReview(Long memberId, String storeName, Integer ratingBand, Integer limit) {
+    public Page<MyReviewDto> searchReview(
+            Long memberId,
+            String storeName,
+            Integer ratingBand,
+            Pageable pageable
+    ) {
 
         // Q클래스 정의
         QReview review = QReview.review;
@@ -52,11 +61,8 @@ public class ReviewQuery {
                 default -> { /* 무시 */ }
             }
         }
-
-        int size = (limit == null || limit <= 0) ? 15 : limit;
-
-        // JPAQueryFactory + Q클래스 사용
-        return queryFactory
+        // content 쿼리 (실제 데이터)
+        JPAQuery<MyReviewDto> contentQuery = queryFactory
                 .select(Projections.constructor(
                         MyReviewDto.class,
                         review.id,
@@ -69,9 +75,26 @@ public class ReviewQuery {
                 .from(review)
                 .join(review.store, store)
                 .leftJoin(review.reply, reply)
-                .where(builder)                    // BooleanBuilder 사용
-                .orderBy(review.createdAt.desc(), review.id.desc()) // 최신순
-                .limit(size)
-                .fetch();                          // 결과 반환
+                .where(builder)
+                .orderBy(review.createdAt.desc(), review.id.desc());
+
+        // total count 쿼리
+        Long total = queryFactory
+                .select(review.count())
+                .from(review)
+                .join(review.store, store)
+                .leftJoin(review.reply, reply)
+                .where(builder)
+                .fetchOne();
+
+        long totalCount = (total != null) ? total : 0L;
+
+        // 페이징 적용
+        List<MyReviewDto> content = contentQuery
+                .offset(pageable.getOffset())          // (page-1)*size
+                .limit(pageable.getPageSize())         // size (여기선 10)
+                .fetch();
+
+        return new PageImpl<>(content, pageable, totalCount);
     }
 }

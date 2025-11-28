@@ -2,6 +2,7 @@ package com.example.umc9th.domain.mission.repository;
 
 import com.example.umc9th.domain.mission.dto.MissionAtLocationDto;
 import com.example.umc9th.domain.mission.entity.Mission;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.example.umc9th.domain.mission.dto.MissionShowDto;
@@ -61,5 +62,7 @@ public interface MissionRepository extends JpaRepository<Mission, Long> {
             @Param("locationId") Long locationId,
             Pageable pageable
     );
+
+    Page<Mission> findByStoreId(Long storeId, Pageable pageable);
 
 }
