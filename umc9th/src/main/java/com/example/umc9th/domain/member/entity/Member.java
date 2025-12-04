@@ -3,6 +3,7 @@ package com.example.umc9th.domain.member.entity;
 import com.example.umc9th.domain.member.entity.mapping.MemberFood;
 import com.example.umc9th.domain.member.entity.mapping.MemberTerm;
 import com.example.umc9th.domain.member.enums.Gender;
+import com.example.umc9th.domain.member.enums.Role;
 import com.example.umc9th.domain.member.enums.SocialName;
 import com.example.umc9th.domain.mission.entity.mapping.UserMission;
 import com.example.umc9th.domain.review.entity.Review;
@@ -49,6 +50,13 @@ public class Member extends BaseEntity {
 
     @Column(name = "email", nullable = false)
     private String email;
+
+    @Column(name = "password", nullable = false)
+    private String password;
+
+    @Column(name = "role", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @Column(name = "point", nullable = false)
     @Builder.Default
