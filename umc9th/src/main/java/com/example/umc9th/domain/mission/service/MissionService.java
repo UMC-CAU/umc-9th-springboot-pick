@@ -5,18 +5,20 @@ import com.example.umc9th.domain.member.entity.Member;
 import com.example.umc9th.domain.member.repository.MemberRepository;
 import com.example.umc9th.domain.mission.converter.MissionConverter;
 import com.example.umc9th.domain.mission.converter.UserMissionConverter;
-import com.example.umc9th.domain.mission.dto.MissionCreateRequest;
-import com.example.umc9th.domain.mission.dto.MissionCreateResponse;
-import com.example.umc9th.domain.mission.dto.UserMissionChallengeRequest;
-import com.example.umc9th.domain.mission.dto.UserMissionChallengeResponse;
+import com.example.umc9th.domain.mission.dto.*;
 import com.example.umc9th.domain.mission.entity.Mission;
 import com.example.umc9th.domain.mission.entity.mapping.UserMission;
 import com.example.umc9th.domain.mission.repository.MissionRepository;
 import com.example.umc9th.domain.mission.repository.UserMissionRepository;
 import com.example.umc9th.domain.store.entity.Store;
 import com.example.umc9th.domain.store.repository.StoreRepository;
+import com.example.umc9th.global.dto.PageResponse;
+import com.example.umc9th.global.dto.SliceResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 
@@ -29,7 +31,7 @@ public class MissionService {
     private final StoreRepository storeRepository;
     private final MemberRepository memberRepository;
 
-    // 3) 가게에 미션 추가하기
+    // 가게에 미션 추가하기
     public MissionCreateResponse createMission(Long storeId, MissionCreateRequest request) {
 
         Store store = storeRepository.findById(storeId)
@@ -42,7 +44,7 @@ public class MissionService {
         return MissionConverter.toCreateResponse(saved);
     }
 
-    // 4) 미션 도전하기 (UserMission 추가)
+    // 미션 도전하기 (UserMission 추가)
     public UserMissionChallengeResponse challengeMission(Long missionId, UserMissionChallengeRequest request) {
 
         Mission mission = missionRepository.findById(missionId)
@@ -57,5 +59,45 @@ public class MissionService {
         UserMission saved = userMissionRepository.save(userMission);
 
         return UserMissionConverter.toChallengeResponse(saved);
+    }
+
+    // 특정 가게의 미션 목록 조회
+    public PageResponse<MissionSummaryDto> getStoreMissions(Long storeId, Pageable pageable) {
+
+        // 가게 존재 여부 검증 (Optional)
+        storeRepository.findById(storeId)
+                .orElseThrow(() ->
+                        new EntityNotFoundException("Store not found. id=" + storeId));
+
+        var missionPage = missionRepository.findByStoreId(storeId, pageable);
+        return MissionConverter.toMissionSummaryPage(missionPage);
+    }
+
+    // 사용자가 진행 중인 미션 목록 조회
+    public PageResponse<MissionSummaryDto> getOngoingMissions(Long memberId, Pageable pageable) {
+
+        // 멤버 존재 검증 (없으면 404)
+        memberRepository.findById(memberId)
+                .orElseThrow(() ->
+                        new EntityNotFoundException("Member not found. id=" + memberId));
+
+        Page<UserMission> page = userMissionRepository
+                .findByMember_IdAndFinishedFalse(memberId, pageable);
+
+        return MissionConverter.toMissionSummaryPageFromUserMission(page);
+    }
+
+    // Slice 기반 사용자가 진행 중인 미션 목록 조회
+    public SliceResponse<MissionSummaryDto> getOngoingMissionsSlice(Long memberId, Pageable pageable) {
+
+        // 멤버 존재 확인
+        memberRepository.findById(memberId)
+                .orElseThrow(() ->
+                        new EntityNotFoundException("Member not found. id=" + memberId));
+
+        Slice<UserMission> slice = userMissionRepository
+                .findSliceByMember_IdAndFinishedFalse(memberId, pageable);
+
+        return MissionConverter.toMissionSummarySliceFromUserMission(slice);
     }
 }
